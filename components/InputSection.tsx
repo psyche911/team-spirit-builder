@@ -23,11 +23,11 @@ const InputSection: React.FC<InputSectionProps> = ({ people, setPeople }) => {
     return counts;
   }, [people]);
 
-  const hasDuplicates = Object.values(nameCounts).some(count => count > 1);
+  const hasDuplicates = Object.values(nameCounts).some((count) => (count as number) > 1);
 
   const handleAddFromText = () => {
     if (!inputText.trim()) return;
-    
+
     const newNames = inputText
       .split('\n')
       .map(name => name.trim())
@@ -82,16 +82,17 @@ const InputSection: React.FC<InputSectionProps> = ({ people, setPeople }) => {
     setIsGenerating(false);
   };
 
+  const [showClearConfirm, setShowClearConfirm] = useState(false);
+
   const clearList = () => {
-    if (window.confirm('Are you sure you want to clear the entire list?')) {
-      setPeople([]);
-    }
+    setPeople([]);
+    setShowClearConfirm(false);
   };
 
   const handleRemoveDuplicates = () => {
     const seen = new Set<string>();
     const uniquePeople: Person[] = [];
-    
+
     // Keep the first occurrence, remove subsequent duplicates
     for (const p of people) {
       const key = p.name.trim().toLowerCase();
@@ -100,7 +101,7 @@ const InputSection: React.FC<InputSectionProps> = ({ people, setPeople }) => {
         uniquePeople.push(p);
       }
     }
-    
+
     setPeople(uniquePeople);
   };
 
@@ -111,14 +112,14 @@ const InputSection: React.FC<InputSectionProps> = ({ people, setPeople }) => {
   return (
     <div className="space-y-6 animate-fade-in">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        
+
         {/* Input Area */}
         <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
           <h2 className="text-xl font-semibold text-slate-800 mb-4 flex items-center gap-2">
             <UserPlus className="w-5 h-5 text-indigo-600" />
             Add People
           </h2>
-          
+
           <textarea
             className="w-full h-48 p-4 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all resize-none text-sm"
             placeholder="Paste names here (one per line)..."
@@ -135,7 +136,7 @@ const InputSection: React.FC<InputSectionProps> = ({ people, setPeople }) => {
               <FileText className="w-4 h-4" />
               Add Text
             </button>
-            
+
             <input
               type="file"
               accept=".csv,.txt"
@@ -165,7 +166,7 @@ const InputSection: React.FC<InputSectionProps> = ({ people, setPeople }) => {
             </button>
           </div>
           <p className="text-xs text-slate-500 mt-2 flex items-center gap-1">
-             <AlertCircle className="w-3 h-3" /> Supports CSV or plain text files.
+            <AlertCircle className="w-3 h-3" /> Supports CSV or plain text files.
           </p>
         </div>
 
@@ -190,13 +191,31 @@ const InputSection: React.FC<InputSectionProps> = ({ people, setPeople }) => {
                 </button>
               )}
               {people.length > 0 && (
-                <button
-                  onClick={clearList}
-                  className="text-red-500 hover:text-red-700 text-sm font-medium flex items-center gap-1 transition-colors px-2 py-1 rounded hover:bg-red-50"
-                >
-                  <Trash2 className="w-4 h-4" />
-                  Clear All
-                </button>
+                !showClearConfirm ? (
+                  <button
+                    onClick={() => setShowClearConfirm(true)}
+                    className="text-red-500 hover:text-red-700 text-sm font-medium flex items-center gap-1 transition-colors px-2 py-1 rounded hover:bg-red-50"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                    Clear All
+                  </button>
+                ) : (
+                  <div className="flex items-center gap-2 animate-fade-in">
+                    <span className="text-sm text-slate-600">Sure?</span>
+                    <button
+                      onClick={clearList}
+                      className="bg-red-500 hover:bg-red-600 text-white text-xs px-2 py-1 rounded font-medium transition-colors"
+                    >
+                      Yes, Clear
+                    </button>
+                    <button
+                      onClick={() => setShowClearConfirm(false)}
+                      className="text-slate-500 hover:text-slate-700 text-xs font-medium px-2 py-1"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                )
               )}
             </div>
           </div>
@@ -213,11 +232,10 @@ const InputSection: React.FC<InputSectionProps> = ({ people, setPeople }) => {
                 return (
                   <div
                     key={person.id}
-                    className={`flex justify-between items-center p-3 rounded-lg group transition-colors ${
-                      isDuplicate 
-                        ? 'bg-amber-50 border border-amber-200 hover:bg-amber-100' 
+                    className={`flex justify-between items-center p-3 rounded-lg group transition-colors ${isDuplicate
+                        ? 'bg-amber-50 border border-amber-200 hover:bg-amber-100'
                         : 'bg-slate-50 hover:bg-slate-100'
-                    }`}
+                      }`}
                   >
                     <div className="flex items-center gap-2 min-w-0">
                       {isDuplicate && (

@@ -1,0 +1,1 @@
+{"root":["./app.tsx","./index.tsx","./types.ts","./vite.config.ts","./components/grouping.tsx","./components/inputsection.tsx","./components/prizedraw.tsx","./services/geminiservice.ts"],"version":"5.8.3"}
