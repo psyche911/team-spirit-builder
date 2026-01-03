@@ -4,6 +4,11 @@ on:
   repository_dispatch:
     types: [claude-code]
 
+permissions:
+  contents: read
+  actions: read
+  metadata: read
+
 jobs:
   build:
     runs-on: ubuntu-latest
