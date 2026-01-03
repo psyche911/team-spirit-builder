@@ -1,0 +1,13 @@
+name: Claude Code
+on:
+  workflow_dispatch:
+  repository_dispatch:
+    types: [claude-code]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup
+        run: echo "Claude Code workflow ready"
